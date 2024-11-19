@@ -60,9 +60,9 @@ const Gameboard = (() => {
     const c = { 0: '-', 1: 'X', 2: 'O' }
 
     return `` +
-    `${c[board[0]]} ${c(board[1])} ${c[board[2]]}\n` +
-    `${c[board[3]]} ${c(board[4])} ${c[board[5]]}\n` +
-    `${c[board[6]]} ${c(board[7])} ${c[board[8]]}\n`
+    `${c[board[0]]} ${c[board[1]]} ${c[board[2]]}\n` +
+    `${c[board[3]]} ${c[board[4]]} ${c[board[5]]}\n` +
+    `${c[board[6]]} ${c[board[7]]} ${c[board[8]]}\n`
   };
 
   const toIsomorph = isX => {
@@ -89,22 +89,35 @@ const GameState = (() => {
   const submit = (index) => {
     if (!Gameboard.placeMark(index, isX ? 1 : 2)) return;
     state = Gameboard.getStatus(isX);
-
-    // console.log(Gameboard.toString());
-
-    // switch (state) {
-    //   case 0: console.log('O wins'); return;
-    //   case 1: console.log('X wins'); return;
-    //   case 2: console.log('tie'); return;
-    //   default: break;
-    // };
-
-    if (state > -1) return;
-
     isX = !isX;
+    if (state > -1) return;
   };
 
+  const isTurnX = () => isX;
   const getState = () => state;
 
-  return { submit, getState };
+  return { submit, getState, isTurnX };
 })();
+
+const Display = ((document) => {
+
+  const idToIndex = (id) => {
+    return +(id.slice(4)-1);
+  };
+
+  const attachListeners = () => {
+    for (let i = 1; i < 10; i++) {
+      const cellId = `cell${i}`;
+      const cellElement = document.getElementById(cellId);
+      cellElement.addEventListener('click', (e) => {
+        if (GameState.getState() > -1) return;
+        GameState.submit(idToIndex(e.target.id));
+        e.target.style["background-color"] = GameState.isTurnX() ? "#ffff00" : "#00ffff";
+      });
+    }
+  };
+
+  return {attachListeners};
+})(document);
+
+Display.attachListeners();
