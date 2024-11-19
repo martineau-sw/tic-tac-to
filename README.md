@@ -29,17 +29,27 @@ Create a tic tac toe game that's played between two players. Script minimizes gl
 		- `0` empty
 		- `1` player 1
 		- `2` player two
-	- Mark position
+	- Validate and mark position
 	- Reset board
-	- Get board
-- Player object
-	- Marker
+  - Check win
+
 - Game state
 	- Turn
-	- Check win
-  - End game
+    - Request move and continue if valid
+    - Check board status for win / tie, toggle turn if no end and go to next turn
+    - End
 
 ```
+algorithm for win condition:
+- store win states as string array 
+- reduce board to isomorphic representation for current player's turn
+  - if mark is current player turn append +
+  - else append -
+- check for string match in win state array
+- if match current player wins
+- else if 0 is present in array continue to next turn
+- else tie
+
 1:     4:     7:
 + + +  + - -  + - -
 - - -  + - -  - + -
@@ -67,22 +77,5 @@ Create a tic tac toe game that's played between two players. Script minimizes gl
 7: [ + - - - + - - - + ]
 8: [ - - + - + - + - - ]
 
-potential algorithm for win condition:
-	0. store 0-8 into strings
-		1. "+++------"
-		2. "---+++---"
-		3. "------+++"
-		4. "+--+--+--"
-		5. "-+--+--+-"
-		6. "--+--+--+"
-		7. "+---+---+"
-		8. "--+-+-+--"
-	1. build string from board based after player move on turn
-		- iterate board
-			- if mark is current players turn append +
-			- else append -
-		- check for string match in win state array
-		- if match current player wins
-		- else if 0 is present in array continue to next turn
-		- else tie
+
 ```
