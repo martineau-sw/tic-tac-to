@@ -44,10 +44,6 @@ path {
   grid-template-rows: repeat(3, 20vmin);
 }
 
-#footer {
-}
-
-
 #cell1, #cell2, #cell3,
 #cell4, #cell5, #cell6 {
   border-bottom: 0.25em solid white;
