@@ -12,30 +12,40 @@ const Gameboard = (() => {
     "+---+---+", "--+-+-+--"
   ];
 
+  const moveResponse = {
+    bad: -1,
+    occupied: 0, 
+    good: 1
+  };
+
+  const boardStatus = {
+    continue: 0,
+    xWins: 1,
+    oWins: 2,
+    tie: 3
+  }
+
   const placeMark = (index, mark) => {
 
     const markInvalid = mark !== 1 && mark !== 2;
     const indexOutOfRange = index < 0 || index > 8;
     const indexOccupied = board[index] > 0;
-    const boardFull = !board.includes(0);
 
+    // my bad
     if (markInvalid || indexOutOfRange) {
       console.error('invalid params');
-      return -2;
+      return moveResponse.bad;
     }
 
-    if (boardFull) {
-      console.error('board full');
-      return -1;
-    }
-
+    // occupied
     if (indexOccupied) {
       console.error('space occupied');
-      return 0;
+      return moveResponse.occupied;
     }
 
+    // valid move
     board[index] = mark;
-    return 1;
+    return moveResponse.good;
   };
 
   const resetBoard = () => {
@@ -43,16 +53,21 @@ const Gameboard = (() => {
   };
 
   const getStatus = (isX) => {
-
+    // tie
     if (!board.includes(0)) {
-      return 2;
+      return boardStatus.tie;
     }
 
-    if (winStates.includes(toIsomorph(isX))) {
-      return +isX;
-    };
+    const playerWin = winStates.includes(toIsomorph(isX));
+    
+    if (playerWin) {
+      return isX ? 
+        boardStatus.xWins :
+        boardStatus.oWins ;          
+    }
 
-    return -1;
+    // continue
+    return boardStatus.continue;
   };
 
   const toString = () => {
@@ -78,19 +93,20 @@ const Gameboard = (() => {
     }, '');
   };
 
-  return { placeMark, resetBoard, getStatus, toString }
+  return { moveResponse, boardStatus, placeMark, resetBoard, getStatus, toString }
 })();
 
 const GameState = (() => {
 
   let isX = true;
-  let state = -1;
+  let state = Gameboard.boardStatus.continue;
   
   const submit = (index) => {
-    if (!Gameboard.placeMark(index, isX ? 1 : 2)) return;
+    const marker = isX ? 1 : 2;
+    const moveResponse = Gameboard.placeMark(index, marker);
     state = Gameboard.getStatus(isX);
-    isX = !isX;
-    if (state > -1) return;
+    if (state === Gameboard.boardStatus.continue) isX = !isX;
+    return moveResponse;
   };
 
   const isTurnX = () => isX;
@@ -101,23 +117,37 @@ const GameState = (() => {
 
 const Display = ((document) => {
 
+
   const idToIndex = (id) => {
     return +(id.slice(4)-1);
   };
 
   const attachListeners = () => {
+    const x = document.querySelector('#x').cloneNode(true);
+    const o = document.querySelector('#o').cloneNode(true);
     for (let i = 1; i < 10; i++) {
       const cellId = `cell${i}`;
       const cellElement = document.getElementById(cellId);
       cellElement.addEventListener('click', (e) => {
-        if (GameState.getState() > -1) return;
-        GameState.submit(idToIndex(e.target.id));
-        e.target.style["background-color"] = GameState.isTurnX() ? "#ffff00" : "#00ffff";
+        if (GameState.getState() !== Gameboard.boardStatus.continue) return;
+        const isX = GameState.isTurnX();
+        const moveResponse = GameState.submit(idToIndex(e.target.id));
+        console.log(GameState.getState(), isX, moveResponse);
+        if (moveResponse === Gameboard.moveResponse.good) {
+            if (isX) {
+              e.target.appendChild(x.cloneNode(true));
+              return;
+            }
+            e.target.appendChild(o.cloneNode(true)) ;
+        }
+        
       });
     }
+    document.querySelector('#x').remove();
+    document.querySelector('#o').remove();
   };
 
-  return {attachListeners};
+  return { attachListeners };
 })(document);
 
 Display.attachListeners();
