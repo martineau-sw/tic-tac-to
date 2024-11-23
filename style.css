@@ -5,7 +5,7 @@
 }
 
 :root {
-  font-size: 16px;
+  font-size: clamp(8px, 2vmax, 16px);
 }
 
 body { 
@@ -18,8 +18,17 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6, p {
-  text-shadow: 0 0.0625em rgb(0 0 0 / 1);
   text-align: center;
+}
+
+h1 {
+  font-size: 3rem;
+  text-shadow: 0.5rem 0.5rem 0.25rem rgb(0 0 0 / 0.1);
+}
+
+h2 {
+  color: rgb(240 240 250);
+
 }
 
 path {
@@ -28,8 +37,12 @@ path {
 
 }
 
-#x {
+.x {
   scale: 1.2
+}
+
+.o {
+  scale: .9;
 }
 
 #header {
@@ -37,11 +50,102 @@ path {
   margin-top: 3rem;
 }
 
+dialog {
+  font-size: 2rem;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  margin-block: auto;
+  position: absolute;
+  z-index: 1;
+}
+
+#results,
+#names {
+  color: rgb(40 44 48);
+  background-color: rgb(200 200 200);
+  border: none;
+  padding: 2em;
+  border-radius: 0.5em;
+  box-shadow: 0em 0.5em 0.25em rgb(0 0 0 / 0.1);
+}
+
+#results[open] {
+  font-size: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+#names > form {
+  font-size: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+#results > *,
+#names form > * {
+  font-family: 'Roboto', 'Arial', 'Helvetica', sans-serif;
+  font-weight: 400;
+  text-align: center;
+}
+
+#results > h2 {
+  flex: 2;
+  color: rgb(40 44 48);
+}
+
+#names input {
+  padding: 0.5em;
+  border: none;
+  border-radius: 0.5rem;
+}
+
+button {
+  font-size: 0.75em;
+  color: rgb(240 240 250);
+  background-color: rgb(40 44 48);
+  align-self: center;
+  padding: 0.5em 1.5em;
+  border-radius: 0.5rem;
+  border: none;
+}
+
+#players > button:hover {
+  transition: all 50ms ease;
+  scale: 1.01;
+}
+
+#players > button:active {
+  scale: 0.99;
+}
+
 #game {
   display: grid;
   place-self: center;
   grid-template-columns: repeat(3, 20vmin);
   grid-template-rows: repeat(3, 20vmin);
+}
+
+.cell, svg {
+  filter: drop-shadow(1rem 1rem 0.25rem rgb(0 0 0 /0.1));
+}
+
+svg {
+  transition: all 100ms ease-out;
+}
+
+.cell:hover svg {
+  scale: 0.98;
+  transform-origin: center;
+}
+
+.cell:active svg {
+  scale: 0.50;
+  transform-origin: center;
 }
 
 #cell1, #cell2, #cell3,
